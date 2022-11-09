@@ -10,6 +10,7 @@ plugins {
     id 'maven-publish'
 }
 
+
 group = 'com.github.fuyuguang'
 version = '0.9.1'
 

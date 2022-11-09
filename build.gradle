@@ -12,15 +12,18 @@ buildscript {
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url "https://jitpack.io" }
+        maven { url 'https://jitpack.io' }
         maven { url 'https://www.jitpack.io' }
         //友盟   https://repo1.maven.org/maven2/
         maven { url 'https://repo1.maven.org/maven2/' }
+
+
 
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
@@ -35,7 +38,8 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url "https://jitpack.io" }
+        maven { url 'https://jitpack.io' }
+
         maven { url 'https://www.jitpack.io' }
         //友盟   https://repo1.maven.org/maven2/
         maven { url 'https://repo1.maven.org/maven2/' }
