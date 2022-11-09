@@ -1,8 +1,18 @@
 
+//plugins {
+//    id 'com.android.library'
+//    id 'org.jetbrains.kotlin.android'
+//}
+
 plugins {
     id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'maven-publish'
 }
+
+group = 'com.github.fuyuguang'
+version = '0.9.1'
+
 
 android {
 
@@ -92,9 +102,17 @@ dependencies {
     implementation 'org.aspectj:aspectjrt:1.9.7'
 }
 
-
-
-
-
-
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.fuyuguang'
+                artifactId = 'lib_network'
+                version = '0.9.1'
+            }
+        }
+    }
+}
 
