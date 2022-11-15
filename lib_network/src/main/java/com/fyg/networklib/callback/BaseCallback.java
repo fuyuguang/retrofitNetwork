@@ -16,7 +16,7 @@ import com.fyg.networklib.model.bean.ApiResponse;
  * 类描述：
  * 备注：
  */
-public  class BaseCallback<T> implements LifeCycleCallback.Callback<T, LifeCycleCallback.ILoadingView> {
+public  class BaseCallback<T> implements Callback<T, ILoadingView> {
 
     private final Callback<T, ILoadingView> mRealCallback;
 
@@ -39,7 +39,7 @@ public  class BaseCallback<T> implements LifeCycleCallback.Callback<T, LifeCycle
         return BusinessHandler.getInstance();
     }
 
-    public BaseCallback(LifeCycleCallback.Callback<T, LifeCycleCallback.ILoadingView> callback) {
+    public BaseCallback(Callback<T, ILoadingView> callback) {
         mRealCallback = callback;
     }
 

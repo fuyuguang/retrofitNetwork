@@ -76,9 +76,8 @@ public class ParseNetThrowable {
             return new HttpError("证书出错，请稍后再试", t);
         }else if(t instanceof ConnectTimeoutException || t instanceof SocketTimeoutException || t instanceof UnknownHostException){
             return new HttpError("网络连接超时，请稍后重试", t);
-        }else {
+        } else{
             return new HttpError("请求失败", t);
         }
     }
-
 }

@@ -34,7 +34,7 @@ public class OnlineCacheInterceptor extends CacheInterceptor {
             mOnlineCacheTime = StringUtils.toInt(onlineCacheTime, 0);
         }
 
-        okhttp3.Response response = chain.proceed(request);
+        Response response = chain.proceed(request);
 
         if(mOnlineCacheTime > 0 && response.code() != 304){
             return  response.newBuilder()

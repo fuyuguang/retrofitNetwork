@@ -77,10 +77,10 @@ public class GetGenerateParam implements IGenerateParam {
 		return requestBuilder.build();
 	}
 
-	public HttpUrl.Builder buildGetParam(HttpUrl.Builder httpUrlBuilder,Map<String, String> generateParams){
+	public Builder buildGetParam(Builder httpUrlBuilder, Map<String, String> generateParams){
 
 		if (httpUrlBuilder != null && generateParams != null && !generateParams.isEmpty()){
-			for (Map.Entry<String,String> entry : generateParams.entrySet()) {
+			for (Entry<String,String> entry : generateParams.entrySet()) {
 				httpUrlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
 			}
 		}

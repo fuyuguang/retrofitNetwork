@@ -9,9 +9,9 @@ package com.fyg.networklib.result
  * 类描述：
  * 备注：
  */
-abstract  class BaseResource(
+abstract  class BaseResource (
     val status: Status,
-    val message: String?,
+    var message: String?,
     val throwable: Throwable?
 ) {
 

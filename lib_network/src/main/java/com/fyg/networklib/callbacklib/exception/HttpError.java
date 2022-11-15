@@ -3,7 +3,7 @@ package com.fyg.networklib.callbacklib.exception;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public final class HttpError extends RuntimeException {
+public  class HttpError extends RuntimeException {
     private static final long serialVersionUID = -1314024482758433L;
 
     @NonNull
