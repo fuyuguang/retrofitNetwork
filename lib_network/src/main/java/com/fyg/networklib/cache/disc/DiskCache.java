@@ -52,7 +52,7 @@ public interface DiskCache {
      * @param listener    Listener for saving progress, can be ignored if you don't use
      *                    in ImageLoader calls
      * @return <b>true</b> - if image was saved successfully; <b>false</b> - if image wasn't saved in disk cache.
-     * @throws IOException
+     * @throws java.io.IOException
      */
     boolean save(String imageUri, InputStream inputStream, IoUtils.CopyListener listener) throws IOException;
 

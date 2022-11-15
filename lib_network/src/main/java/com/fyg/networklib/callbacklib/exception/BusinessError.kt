@@ -17,4 +17,13 @@ class BusinessError : HttpError {
     override fun toString(): String {
         return msg
     }
+
+    companion object BusinessErrorFactory{
+
+        @JvmStatic
+        fun createBusinessError(msg: String) : BusinessError{
+            return BusinessError(msg)
+        }
+
+    }
 }

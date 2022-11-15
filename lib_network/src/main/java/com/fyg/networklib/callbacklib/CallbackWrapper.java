@@ -32,7 +32,7 @@ public  class CallbackWrapper<T>  {
 
 
 
-    public CallbackWrapper(IBusinessHandler.Factory factory, Callback callback) {
+    public CallbackWrapper(IBusinessHandler.Factory factory, LifeCycleCallback.Callback callback) {
         mRealCallback = callback;
         mIBusinessHandler = factory.getBusinessHandler();
     }

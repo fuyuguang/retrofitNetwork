@@ -27,14 +27,14 @@ public class ApiETagCacheManager {
     }
 
     public synchronized void save(Context context, String key, String value) {
-        InnerSingleton.INSTANCE.mCache.put(key, value);
+        ApiETagCacheManager.InnerSingleton.INSTANCE.mCache.put(key, value);
     }
     @DebugLog
     public synchronized String get(Context context, String key) {
-        return InnerSingleton.INSTANCE.mCache.getAsString(key);
+        return ApiETagCacheManager.InnerSingleton.INSTANCE.mCache.getAsString(key);
     }
     @DebugLog
     public synchronized void clear(Context context) {
-        InnerSingleton.INSTANCE.mCache.clear();
+        ApiETagCacheManager.InnerSingleton.INSTANCE.mCache.clear();
     }
 }
