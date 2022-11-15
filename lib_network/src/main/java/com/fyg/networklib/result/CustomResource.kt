@@ -1,11 +1,12 @@
 package com.fyg.networklib.result
 import android.util.Log
-import com.fyg.networklib.BaseResponse
+import androidx.lifecycle.MutableLiveData
 import com.fyg.networklib.Ktx
 import com.fyg.networklib.NetWorkManager
 import com.fyg.networklib.callbacklib.LifeCycleCallback.ILoadingView
 import com.fyg.networklib.callbacklib.exception.AppException
 import com.fyg.networklib.callbacklib.exception.ParseNetThrowable
+import com.fyg.networklib.model.bean.ApiResponse
 import com.fyg.networklib.result.Status.*
 
 /**
@@ -49,12 +50,12 @@ import com.fyg.networklib.result.Status.*
         val uploadHeadPortraitLiveData = MutableLiveData<State<FileDescResult>>()
  */
 
- class CustomResource<out T>(
+ class CustomResource<T>(
      status: Status,
     val data: T?,
      message: String?,
      throwable: Throwable?
-) :BaseResource(status,message,throwable){
+) :BaseResource(status,message,throwable) {
 
     companion object {
         fun <T> success(data: T): CustomResource<T> =
@@ -75,16 +76,20 @@ import com.fyg.networklib.result.Status.*
     }
 
 
-     fun parseResponse(iLoadingView: ILoadingView?, onSuccess: T?.() -> Unit,@Suppress("unused") onError: ((AppException) -> Unit)? = null) {
+    fun parseResponseWithLoadingView(
+        iLoadingView: ILoadingView?,
+        onSuccess: T?.() -> Unit,
+        @Suppress("unused") onError: ((AppException) -> Unit)? = null
+    ) {
         when (status) {
             SUCCESS -> {
                 /**
-                    由于RootResultForRetrofit.isCommunicationOk 需要接收 RootResultForRetrofit 类型，
-                     data 实际类型是 RootResultForRetrofit<CollectListResultInfo>,但编译时不识别，我们需要和他套上真实的类型，这样就可以调用isCommunicationOk 方法判断了
-                     把data 类型改为 （RootResultForRetrofit<T>）类型，
-                    data class Resource<T>(val status: Status,
-                    val data: RootResultForRetrofit<T>?,val message: String?,val throwable: Throwable?)
-                    这里没法判断 业务接口是否调用成功，需要脱一层外衣*/
+                由于RootResultForRetrofit.isCommunicationOk 需要接收 RootResultForRetrofit 类型，
+                data 实际类型是 RootResultForRetrofit<CollectListResultInfo>,但编译时不识别，我们需要和他套上真实的类型，这样就可以调用isCommunicationOk 方法判断了
+                把data 类型改为 （RootResultForRetrofit<T>）类型，
+                data class Resource<T>(val status: Status,
+                val data: RootResultForRetrofit<T>?,val message: String?,val throwable: Throwable?)
+                这里没法判断 业务接口是否调用成功，需要脱一层外衣*/
 //                if (RootResultForRetrofit.isCommunicationOk(data)) {
 //                    onSuccess?.invoke(data!!.mData)
 //                } else {
@@ -98,8 +103,8 @@ import com.fyg.networklib.result.Status.*
                 NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
                     showShort(errorLog)
                 }
-                if (Ktx.DEBUG){
-                    Log.d("HTTP",errorLog)
+                if (Ktx.DEBUG) {
+                    Log.d("HTTP", errorLog)
                 }
                 //onError?.invoke(AppException(ParseNetThrowable.parseThrowable(throwable),throwable))
             }
@@ -119,9 +124,9 @@ import com.fyg.networklib.result.Status.*
 
 
     /** 泛型方法需要优化，去除 第二个多余的参数，  */
-    fun <T> parseResponse(
+    fun <T> parseResponseWithLoadingView(
         iLoadingView: ILoadingView?,
-        resource: CustomResource<BaseResponse<T>>,
+        resource: CustomResource<ApiResponse<T>>,
         onSuccess: ((T?) -> Unit),
         onError: ((AppException) -> Unit)? = null
     ) {
@@ -158,6 +163,112 @@ import com.fyg.networklib.result.Status.*
                     iLoadingView?.dismissLoadingDialog()
                 }
 
+            }
+        }
+    }
+
+
+    /** 泛型方法需要优化，去除 第二个多余的参数，  */
+    fun <T> parseResponse(
+        resource: CustomResource<ApiResponse<T>>,
+        uiState: MutableLiveData<BaseResource>?,
+        onSuccess: ((T?) -> Unit),
+        onError: ((AppException) -> Unit)? = null
+    ) {
+        resource.let { resource ->
+            when (resource.status) {
+                SUCCESS -> {
+                    resource.data?.apply {
+                        if (this.isSucces()) {
+                            onSuccess?.invoke(this.getResult())
+                        } else {
+                            onError?.invoke(
+                                AppException(
+                                    this.getResponseCode(),
+                                    this.getResponseMsg()
+                                )
+                            )
+                        }
+                    }
+                }
+                ERROR -> {
+                    NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                        showShort(ParseNetThrowable.parseThrowable(resource.throwable).toString())
+                    }
+                }
+                VERIFY_ERROR -> {
+                    NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                        showShort(resource.message)
+                    }
+                }
+                LOADING_START -> {
+                    uiState?.value = resource
+                }
+                LOADING_END -> {
+                    uiState?.value = resource
+                }
+
+            }
+        }
+    }
+
+
+
+//    resource: CustomResource<ApiResponse<T>>,
+//    uiState: MutableLiveData<BaseResource>?,
+//    fun parseResponseWithUiState(uiState: MutableLiveData<CustomResource<*>>?, onSuccess: T?.() -> Unit,@Suppress("unused") onError: ((AppException) -> Unit)? = null) {
+    fun parseResponseWithUiState(uiState: MutableLiveData<BaseResource>?, onSuccess: T?.() -> Unit,@Suppress("unused") onComplate: ((AppException) -> Unit)? = null) {
+        when (status) {
+            SUCCESS -> {
+                onSuccess?.invoke(data)
+            }
+            ERROR -> {
+                val errorLog = ParseNetThrowable.parseThrowable(throwable).toString()
+                NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                    showShort(errorLog)
+                }
+                if (Ktx.DEBUG){
+                    Log.d("HTTP",errorLog)
+                }
+                onComplate?.invoke(AppException(ParseNetThrowable.parseThrowable(throwable),throwable))
+            }
+            VERIFY_ERROR -> {
+                NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                    showShort(message)
+                }
+                onComplate?.invoke(AppException(ParseNetThrowable.parseThrowable(throwable),throwable))
+            }
+            LOADING_START ,LOADING_END-> {
+                uiState?.value = this
+            }
+        }
+    }
+
+
+
+    fun parseResponseWithUiState2(resource: CustomResource<T>,uiState: MutableLiveData<BaseResource>?, onSuccess: CustomResource<T>?.() -> Unit,@Suppress("unused") onComplate: ((AppException) -> Unit)? = null) {
+        when (status) {
+            SUCCESS -> {
+                onSuccess?.invoke(this@CustomResource)
+            }
+            ERROR -> {
+                val errorLog = ParseNetThrowable.parseThrowable(throwable).toString()
+                NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                    showShort(errorLog)
+                }
+                if (Ktx.DEBUG){
+                    Log.d("HTTP",errorLog)
+                }
+                onComplate?.invoke(AppException(ParseNetThrowable.parseThrowable(throwable),throwable))
+            }
+            VERIFY_ERROR -> {
+                NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                    showShort(message)
+                }
+                onComplate?.invoke(AppException(ParseNetThrowable.parseThrowable(throwable),throwable))
+            }
+            LOADING_START ,LOADING_END-> {
+                uiState?.value = this
             }
         }
     }

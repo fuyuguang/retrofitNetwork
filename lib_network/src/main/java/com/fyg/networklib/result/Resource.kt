@@ -1,5 +1,6 @@
 package com.fyg.networklib.result
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.fyg.networklib.BaseResponse
 import com.fyg.networklib.Ktx
 import com.fyg.networklib.NetWorkManager
@@ -39,10 +40,10 @@ import com.fyg.networklib.result.Status.*
             NetWorkManager.getInstance().mNetConfig?.mShowToast?.showShort(data?.getResponseMsg())
         }
     ){
-        parseResponse(null,onSuccess,onError)
+        parseResponseWithLoadingView(null,onSuccess,onError)
     }
 
-    /*inline*/ fun parseResponse(
+    /*inline*/ fun parseResponseWithLoadingView(
         iLoadingView: ILoadingView? = null,
         onSuccess: ((T?) -> Unit),
         onError: ((AppException) -> Unit)? = {
@@ -88,6 +89,44 @@ import com.fyg.networklib.result.Status.*
     }
 
 
+/*inline*/ fun  parseResponseWithUiState(
+    uiState: MutableLiveData<BaseResource>?, onSuccess: ((T?) -> Unit),
+    onError: ((AppException) -> Unit)? = {
+            /** 提供默认值，如果开发需要自定义，需复写  */
+            NetWorkManager.getInstance().mNetConfig?.mShowToast?.showShort(data?.getResponseMsg())
+        }
+    ) {
+        when (status) {
+            SUCCESS -> {
+                if (data != null){
+                    if (data.isSucces()){
+                        onSuccess?.invoke(data.getResult())
+                    }else{
+                        onError?.invoke(AppException(data.getResponseCode(), data.getResponseMsg()))
+                    }
+                }else{
+                    NetWorkManager.getInstance().mNetConfig?.mShowToast?.showShort("Resource data  is null")
+                }
+            }
+            ERROR -> {
+                val errorLog = ParseNetThrowable.parseThrowable(throwable).toString();
+                NetWorkManager.getInstance().mNetConfig?.mShowToast?.showShort(errorLog)
+                if (Ktx.DEBUG){
+                    Log.d("HTTP",errorLog)
+                }
+            }
+            VERIFY_ERROR -> {
+                NetWorkManager.getInstance().mNetConfig?.mShowToast?.apply {
+                    showShort(message)
+                }
+            }
+            LOADING_START ,LOADING_END -> {
+                uiState?.value = this
+            }
+        }
+    }
+
+
 
     companion object {
         fun <T> success(data: BaseResponse<T>?): Resource<T> =
@@ -103,4 +142,21 @@ import com.fyg.networklib.result.Status.*
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
