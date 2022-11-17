@@ -2,16 +2,11 @@
 //rootProject.name = "Test"
 
 include ':lib_network'
-include ':lib_baseapp'
-include ':lib_database'
 
 
-include ':lib_comm'
-//include ':lib_baseui'
-//include ':moduler_test'
-//include ':moduler_wms'
-//include ':lib_bridge_jx'
 
-include ':lib_provider'
-
-include ':lib_dialog'
+//include ':lib_provider'
+//include ':lib_dialog'
+//include ':lib_baseapp'
+//include ':lib_database'
+//include ':lib_comm'
