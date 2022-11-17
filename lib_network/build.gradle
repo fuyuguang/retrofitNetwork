@@ -117,8 +117,8 @@ afterEvaluate {
                 from components.release
                 groupId = "$jitpack_release_group"
 //                artifactId = 'lib_network'
-                artifactId = "$artifact_lib_network_id"
                 version = "$jitpack_release_version"
+                artifactId = "$artifact_lib_network_id"
             }
         }
     }

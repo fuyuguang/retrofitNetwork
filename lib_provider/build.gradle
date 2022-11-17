@@ -65,8 +65,8 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = "$jitpack_release_group"
-                artifactId = "$artifact_lib_dialog_id"
-                version = "$artifact_lib_provider_id"
+                version = "$jitpack_release_version"
+                artifactId = "$artifact_lib_provider_id"
             }
         }
     }
