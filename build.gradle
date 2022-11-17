@@ -2,7 +2,29 @@ apply from: "config.gradle"
 
 
 buildscript {
-    ext.kotlin_version = "1.6.10"
+
+    ext.jitpack_release_version = "0.9.4"
+    ext.jitpack_release_group = "com.github.fuyuguang"
+
+    ext.artifact_lib_network_id = "lib_network"
+    ext.artifact_lib_comm_id = "lib_comm"
+    ext.artifact_lib_database_id = "lib_database"
+    ext.artifact_lib_dialog_id = "lib_dialog"
+    ext.artifact_lib_baseapp_id = "lib_baseapp"
+    ext.artifact_lib_provider_id = "lib_provider"
+
+
+
+    ext.kotlin_version = '1.6.10'
+    ext.arouter_register_version = '1.0.2'
+
+//    ext.lifecycle_version = "2.5.0-alpha06"
+    ext.lifecycle_version = "2.2.0"
+//    ext.lifecycle_version = "2.4.2"
+    ext.arch_version = "2.1.0"
+
+
+
     repositories {
         google()
         mavenCentral()
